@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.0',
+    version='0.1.1',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -33,10 +33,14 @@ Add to "config.py" file::
     ]
 
 Check other config options and their defaults, e.g. "seconds_per_notification=60":
-* https://github.com/denis-ryzhkov/critbot/blob/master/core.py#L23 - "crit_defaults"
-* https://github.com/denis-ryzhkov/critbot/blob/master/plugins/syslog.py#L17
-* https://github.com/denis-ryzhkov/critbot/blob/master/plugins/slack.py#L14
-* https://github.com/denis-ryzhkov/critbot/blob/master/plugins/email.py#L14
+
+* https://github.com/denis-ryzhkov/critbot/blob/master/critbot/core.py#L23 - "crit_defaults"
+
+* https://github.com/denis-ryzhkov/critbot/blob/master/critbot/plugins/syslog.py#L17
+
+* https://github.com/denis-ryzhkov/critbot/blob/master/critbot/plugins/slack.py#L14
+
+* https://github.com/denis-ryzhkov/critbot/blob/master/critbot/plugins/email.py#L14
 
 Use "crit" in other files of your project::
 
@@ -71,7 +75,7 @@ and create pull requests with new plugins inside.
         'Programming Language :: Python :: 2.7',
         'Topic :: Software Development :: Libraries :: Python Modules',
     ],
-    py_modules=['critbot'],
+    packages=['critbot'],
     install_requires=[
         'adict',
         'requests',
