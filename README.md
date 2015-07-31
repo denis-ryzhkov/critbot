@@ -27,7 +27,7 @@ Add to "config.py" file:
             to='Name1 <user1@example.com>, Name2 <user2@example.com>',
             user='critbot@example.com', # Add more config if not GMail.
             password='pa$$word',
-        )
+        ),
     ]
 
 Check other config options and their defaults, e.g. "seconds_per_notification=60":
@@ -57,6 +57,6 @@ Use "crit" in other files of your project:
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.1  
+critbot version 0.1.3  
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

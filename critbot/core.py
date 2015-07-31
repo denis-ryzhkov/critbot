@@ -6,7 +6,7 @@ Docs:
 https://github.com/denis-ryzhkov/critbot
 https://pypi.python.org/pypi/critbot
 
-critbot version 0.1.1
+critbot version 0.1.3
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 """
@@ -52,7 +52,7 @@ def crit(only='', also='', subject='', plugins=None):
 
         ### text
 
-        text = utf8(only) or '{} {}'.format(utf8(also), format_exc())
+        text = utf8(only) or '{} {}'.format(utf8(also), format_exc()).lstrip()
 
         ### plugins, seconds_per_notification
 
