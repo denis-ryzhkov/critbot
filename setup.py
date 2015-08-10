@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.3',
+    version='0.1.4',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -32,9 +32,11 @@ Add to "config.py" file::
         ),
     ]
 
-Check other config options and their defaults, e.g. "seconds_per_notification=60":
+Check other config options and their defaults, e.g. "seconds_per_notification=60" and "spam=False":
 
 * https://github.com/denis-ryzhkov/critbot/blob/master/critbot/core.py#L23 - "crit_defaults"
+
+* https://github.com/denis-ryzhkov/critbot/blob/master/critbot/core.py#L38 - "crit"
 
 * https://github.com/denis-ryzhkov/critbot/blob/master/critbot/plugins/syslog.py#L17
 

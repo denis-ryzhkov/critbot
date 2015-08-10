@@ -6,7 +6,7 @@ Docs:
 https://github.com/denis-ryzhkov/critbot
 https://pypi.python.org/pypi/critbot
 
-critbot version 0.1.3
+critbot version 0.1.4
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 """
@@ -37,7 +37,7 @@ def utf8(value):
 
 ### crit
 
-def crit(only='', also='', subject='', plugins=None):
+def crit(only='', also='', subject='', plugins=None, spam=False):
     """
     Sends critical error.
 
@@ -45,6 +45,7 @@ def crit(only='', also='', subject='', plugins=None):
     @param str also - Additional details of crit to add to traceback.
     @param str subject - Subject of this crit instead of "crit_defaults.subject".
     @param list plugins - Plugins to send this crit to instead of "crit_defaults.plugins".
+    @param bool spam - Ignore "plugin.seconds_per_notification", do spam on each crit.
     @return NoneType
     """
 
@@ -58,7 +59,7 @@ def crit(only='', also='', subject='', plugins=None):
 
         now = time.time()
         for plugin in plugins or crit_defaults.plugins:
-            if now - plugin.last_notification_timestamp < plugin.seconds_per_notification:
+            if not spam and now - plugin.last_notification_timestamp < plugin.seconds_per_notification:
                 continue
             plugin.last_notification_timestamp = now
 
