@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.4',
+    version='0.1.5',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -62,6 +62,13 @@ Use "crit" in other files of your project::
     if True:
         crit('test3')
 
+If you are using http://supervisord.org/  
+then you can monitor EXITED and FATAL states with::
+
+    [eventlistener:critvisor]
+    command=critvisor /path/to/config.py
+    events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
+
 Please fork https://github.com/denis-ryzhkov/critbot
 and create pull requests with new plugins inside.
 
@@ -80,6 +87,9 @@ and create pull requests with new plugins inside.
     packages=[
         'critbot',
         'critbot.plugins',
+    ],
+    scripts=[
+        'scripts/critvisor',
     ],
     install_requires=[
         'adict',

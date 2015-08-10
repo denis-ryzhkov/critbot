@@ -6,7 +6,7 @@ Docs:
 https://github.com/denis-ryzhkov/critbot
 https://pypi.python.org/pypi/critbot
 
-critbot version 0.1.4
+critbot version 0.1.5
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 """
