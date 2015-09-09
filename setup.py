@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.6',
+    version='0.1.7',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -98,6 +98,7 @@ and create pull requests with new plugins inside.
     ],
     scripts=[
         'scripts/critvisor',
+        'scripts/stdcrit',
     ],
     install_requires=[
         'adict',
