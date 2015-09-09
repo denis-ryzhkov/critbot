@@ -13,6 +13,7 @@ Add to "config.py" file:
     import critbot.plugins.slack
     import critbot.plugins.email
     from critbot import crit_defaults
+    import logging
 
     crit_defaults.subject = 'MyService host:port CRIT'
 
@@ -30,6 +31,8 @@ Add to "config.py" file:
         ),
     ]
 
+    crit_defaults.crit_in_crit = logging.getLogger('critbot').critical
+
 Check other config options and their defaults, e.g. "seconds_per_notification=60" and "spam=False":
 * https://github.com/denis-ryzhkov/critbot/blob/master/critbot/core.py#L23 - "crit_defaults"
 * https://github.com/denis-ryzhkov/critbot/blob/master/critbot/core.py#L38 - "crit"
@@ -39,6 +42,7 @@ Check other config options and their defaults, e.g. "seconds_per_notification=60
 
 Use "crit" in other files of your project:
 
+    from my_project import config
     from critbot import crit
 
     try:
@@ -62,9 +66,13 @@ then you can monitor EXITED and FATAL states with:
     command=critvisor /path/to/config.py
     events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
 
+If you want to convert stderr of your small scripts to crits:
+
+    stdcrit /path/to/config.py /path/to/script.py arg...
+
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.5  
+critbot version 0.1.6  
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

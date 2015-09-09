@@ -5,10 +5,6 @@ https://github.com/denis-ryzhkov/critbot
 @author Denis Ryzhkov <denisr@denisr.com>
 """
 
-### import
-
-from requests import post
-
 ### plugin
 
 class plugin(object):
@@ -30,6 +26,13 @@ class plugin(object):
         self.last_notification_timestamp = 0
 
     def send(self, subject, text):
+
+        from requests import post
+            # This import is postponed intentionally:
+            # it may be slow because of "pyopenssl",
+            # while small scripts may neither produce a crit, nor need this import.
+            # Once imported, it is cached in "sys.modules", so multiple crits have no overhead.
+
         text = '```{}```'.format(text.replace('```', '???'))
         text = '{} {}'.format(self.users, text).lstrip()
         text = '{} {}'.format(subject, text).lstrip()

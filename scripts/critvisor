@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/env python
 
 """
 critvisor = critbot + supervisor
@@ -26,7 +26,7 @@ def main():
 
     if len(sys.argv) < 2:
         exit(usage)
-    imp.load_source('critvisor_config', sys.argv[1])
+    imp.load_source('critbot_config', sys.argv[1])
 
     while True:
         headers, event = listener.wait()
