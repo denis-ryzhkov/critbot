@@ -6,7 +6,7 @@ Docs:
 https://github.com/denis-ryzhkov/critbot
 https://pypi.python.org/pypi/critbot
 
-critbot version 0.1.7
+critbot version 0.1.8
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>
 MIT License, see http://opensource.org/licenses/MIT
 """
@@ -23,7 +23,15 @@ import sys
 crit_defaults = adict(
     subject='CRIT', # '{service_name} {host}:{port} CRIT'
     plugins=[], # [critbot.plugins.syslog.plugin(), ...]
-    crit_in_crit=sys.stderr.write, # your_logger.critical
+    crit_in_crit=sys.stderr.write, # logging.getLogger('critbot').critical - if you enabled "syslog" plugin, else your_logger.critical
+
+    mc=adict( # Memcached to stop spam from multiple processes.
+        enabled=False,
+        servers=['127.0.0.1'], # http://sendapatch.se/projects/pylibmc/reference.html#pylibmc.Client
+        client_config=adict(binary=True, behaviors=dict(tcp_nodelay=True, distribution='consistent')),
+        pool_size=10,
+        pool=None, # Is initialized on first crit from updated crit_defaults and to avoid useless slowdown in small scripts.
+    ),
 )
 
 ### utf8
@@ -55,12 +63,38 @@ def crit(only='', also='', subject='', plugins=None, spam=False):
 
         text = utf8(only) or '{} {}'.format(utf8(also), format_exc()).lstrip()
 
+        ### mc_pool
+
+        mc_pool = None
+        if crit_defaults.mc.enabled:
+            mc_pool = crit_defaults.mc.pool
+            if not mc_pool:
+                try:
+                    import pylibmc
+                    mc_pool = crit_defaults.mc.pool = pylibmc.ClientPool(
+                        pylibmc.Client(crit_defaults.mc.servers, **crit_defaults.mc.client_config),
+                        crit_defaults.mc.pool_size,
+                    )
+                except Exception:
+                    crit_defaults.crit_in_crit(format_exc())
+
         ### plugins, seconds_per_notification
 
         now = time.time()
         for plugin in plugins or crit_defaults.plugins:
-            if not spam and now - plugin.last_notification_timestamp < plugin.seconds_per_notification:
-                continue
+
+            if not spam:
+                if mc_pool and plugin.seconds_per_notification: # Don't bother Memcached for "syslog" and other "seconds_per_notification=0" plugins.
+                    try:
+                        with mc_pool.reserve(block=True) as mc:
+                            if not mc.add(plugin.__module__ + '.antispam', '1', time=plugin.seconds_per_notification):
+                                continue # E.g. key "critbot.plugins.slack.antispam" still exists.
+                    except Exception:
+                        crit_defaults.crit_in_crit(format_exc())
+
+                if now - plugin.last_notification_timestamp < plugin.seconds_per_notification:
+                    continue
+
             plugin.last_notification_timestamp = now
 
             ### send

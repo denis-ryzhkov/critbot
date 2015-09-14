@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.7',
+    version='0.1.8',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -76,6 +76,15 @@ then you can monitor EXITED and FATAL states with::
 If you want to convert stderr of your small scripts to crits::
 
     stdcrit /path/to/config.py /path/to/script.py arg...
+
+To stop spam from multiple processes::
+
+    apt-get install libmemcached-dev zlib1g-dev
+    pip install pylibmc
+    crit_defaults.mc.enabled = True
+
+    And either "apt-get install memcached"
+    or update "crit_defaults.mc.servers" list.
 
 Please fork https://github.com/denis-ryzhkov/critbot
 and create pull requests with new plugins inside.

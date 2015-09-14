@@ -70,9 +70,18 @@ If you want to convert stderr of your small scripts to crits:
 
     stdcrit /path/to/config.py /path/to/script.py arg...
 
+To stop spam from multiple processes:
+
+    apt-get install libmemcached-dev zlib1g-dev
+    pip install pylibmc
+    crit_defaults.mc.enabled = True
+
+    And either "apt-get install memcached"
+    or update "crit_defaults.mc.servers" list.
+
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.7  
+critbot version 0.1.8  
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT
