@@ -10,7 +10,10 @@ https://github.com/denis-ryzhkov/critbot
 usage = '''Create a config for Supervisor:
 [eventlistener:critvisor]
 command=critvisor /path/to/critbot_config.py
-events=PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
+events=PROCESS_LOG_STDERR,PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
+
+[program:my_program]
+stderr_events_enabled=true
 '''
 
 ### import
@@ -31,13 +34,16 @@ def main():
     while True:
         headers, event = listener.wait()
         event_name = headers.get('eventname')
-        if event_name in ('PROCESS_STATE_EXITED', 'PROCESS_STATE_FATAL'):
+        if event_name in ('PROCESS_LOG_STDERR', 'PROCESS_STATE_EXITED', 'PROCESS_STATE_FATAL'):
             headers, event = eventdata(event + '\n')
-            text = 'Process{space_pid} {groupname}:{processname} crashed from {from_state} to {to_state}'.format(
-                space_pid=' pid={pid}'.format(**headers) if 'pid' in headers else '',
-                to_state=event_name.replace('PROCESS_STATE_', ''),
-                **headers
-            )
+            if event_name == 'PROCESS_LOG_STDERR':
+                text = 'Process pid={pid} {groupname}:{processname} wrote to stderr:\n{err}'.format(err=event, **headers)
+            else:
+                text = 'Process{space_pid} {groupname}:{processname} crashed from {from_state} to {to_state}'.format(
+                    space_pid=' pid={pid}'.format(**headers) if 'pid' in headers else '',
+                    to_state=event_name.replace('PROCESS_STATE_', ''),
+                    **headers
+                )
             crit(only=text)
         listener.ok()
 
