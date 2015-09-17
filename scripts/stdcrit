@@ -27,14 +27,16 @@ def main():
         exit(usage)
     imp.load_source('critbot_config', sys.argv[1])
 
+    command = sys.argv[2:]
+
     try:
-        p = subprocess.Popen(sys.argv[2:], stdin=sys.stdin, stdout=sys.stdout, stderr=subprocess.PIPE)
+        p = subprocess.Popen(command, stdin=sys.stdin, stdout=sys.stdout, stderr=subprocess.PIPE)
         out, err = p.communicate()
         if err:
-            crit(err)
+            crit('{command} wrote to stderr:\n{err}'.format(command=command, err=err))
 
     except Exception:
-        crit()
+        crit(also=command)
 
 if __name__ == '__main__':
     main()
