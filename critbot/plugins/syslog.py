@@ -34,6 +34,7 @@ class plugin(object):
         self.logger.setLevel(logger_level)
         self.handler = logging.handlers.SysLogHandler(**handler_kwargs)
         self.logger.addHandler(self.handler)
+        self.logger.propagate = False # It has its own handler, so should avoid double logging.
         self.seconds_per_notification = seconds_per_notification
         self.last_notification_timestamp = 0
         self.new_line_from = re.compile('[\r\n]+')
