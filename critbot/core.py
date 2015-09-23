@@ -1,15 +1,11 @@
 """
 "critbot" lib.
-Sending critical errors to syslog, slack, email, {your_plugin}.
-
-Docs:
 https://github.com/denis-ryzhkov/critbot
-https://pypi.python.org/pypi/critbot
 
-critbot version 0.1.11
-Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>
-MIT License, see http://opensource.org/licenses/MIT
+@author Denis Ryzhkov <denisr@denisr.com>
 """
+
+__version__ = '0.1.12'
 
 ### import
 
