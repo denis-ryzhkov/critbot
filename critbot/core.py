@@ -5,8 +5,6 @@ https://github.com/denis-ryzhkov/critbot
 @author Denis Ryzhkov <denisr@denisr.com>
 """
 
-__version__ = '0.1.12'
-
 ### import
 
 from adict import adict

@@ -16,13 +16,15 @@ events=PROCESS_LOG_STDERR,PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
 
 [program:my_program]
 stderr_events_enabled=true
+
+Optional "crit_defaults.skip_stderrs" list allows to avoid some "safe" crits.
 '''
 
 ### import
 
 import imp
 from collections import defaultdict
-from critbot import crit
+from critbot import crit, crit_defaults
 import datetime
 import os
 from supervisor.childutils import eventdata, listener
@@ -77,6 +79,8 @@ def main():
         exit(usage)
     imp.load_source('critbot_config', sys.argv[1])
 
+    skip_stderrs = crit_defaults.get('skip_stderrs', [])
+
     stderr_thread = Thread(target=stderr_harvester)
     stderr_thread.daemon = True
     stderr_thread.start()
@@ -88,6 +92,10 @@ def main():
             headers, event = eventdata(event + '\n')
 
             if event_name == 'PROCESS_LOG_STDERR':
+                for skip_stderr in skip_stderrs:
+                    if skip_stderr in event:
+                        continue
+
                 header = 'Process pid={pid} {groupname}:{processname} wrote to stderr:'.format(**headers)
                 with lock:
                     stderr_first.setdefault(header, datetime.datetime.utcnow())

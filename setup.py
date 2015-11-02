@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.12',
+    version='0.1.13',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -75,6 +75,8 @@ then you can monitor stderr, EXITED and FATAL states with::
 
     [program:my_program]
     stderr_events_enabled=true
+
+    Optional "crit_defaults.skip_stderrs" list allows to avoid some "safe" crits.
 
 If you want to convert stderr of your small scripts to crits::
 
