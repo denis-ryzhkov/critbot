@@ -87,6 +87,6 @@ To stop spam from multiple processes:
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.13  
+critbot version 0.1.14  
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

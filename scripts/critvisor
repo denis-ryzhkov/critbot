@@ -92,15 +92,12 @@ def main():
             headers, event = eventdata(event + '\n')
 
             if event_name == 'PROCESS_LOG_STDERR':
-                for skip_stderr in skip_stderrs:
-                    if skip_stderr in event:
-                        continue
-
-                header = 'Process pid={pid} {groupname}:{processname} wrote to stderr:'.format(**headers)
-                with lock:
-                    stderr_first.setdefault(header, datetime.datetime.utcnow())
-                    stderr_last[header] = time.time()
-                    stderr_chunks[header].append(event)
+                if all(skip_stderr not in event for skip_stderr in skip_stderrs):
+                    header = 'Process pid={pid} {groupname}:{processname} wrote to stderr:'.format(**headers)
+                    with lock:
+                        stderr_first.setdefault(header, datetime.datetime.utcnow())
+                        stderr_last[header] = time.time()
+                        stderr_chunks[header].append(event)
 
             else:
                 text = 'Process{space_pid} {groupname}:{processname} crashed from {from_state} to {to_state}'.format(
