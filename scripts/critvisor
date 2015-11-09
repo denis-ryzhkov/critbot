@@ -54,11 +54,9 @@ def stderr_harvester():
                     if now - last < 1:
                         continue
 
-                    texts.append('{} UTC {}\n{}'.format(
-                        stderr_first[header],
-                        header,
-                        ''.join(stderr_chunks[header]),
-                    ))
+                    text = '{} UTC {}\n{}'.format(stderr_first[header], header, ''.join(stderr_chunks[header]))
+                    if all(skip_stderr not in text for skip_stderr in skip_stderrs):
+                        texts.append(text)
 
                     del stderr_first[header]
                     del stderr_last[header]
@@ -92,12 +90,11 @@ def main():
             headers, event = eventdata(event + '\n')
 
             if event_name == 'PROCESS_LOG_STDERR':
-                if all(skip_stderr not in event for skip_stderr in skip_stderrs):
-                    header = 'Process pid={pid} {groupname}:{processname} wrote to stderr:'.format(**headers)
-                    with lock:
-                        stderr_first.setdefault(header, datetime.datetime.utcnow())
-                        stderr_last[header] = time.time()
-                        stderr_chunks[header].append(event)
+                header = 'Process pid={pid} {groupname}:{processname} wrote to stderr:'.format(**headers)
+                with lock:
+                    stderr_first.setdefault(header, datetime.datetime.utcnow())
+                    stderr_last[header] = time.time()
+                    stderr_chunks[header].append(event)
 
             else:
                 text = 'Process{space_pid} {groupname}:{processname} crashed from {from_state} to {to_state}'.format(
