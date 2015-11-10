@@ -42,7 +42,7 @@ stderr_chunks = defaultdict(list)
 
 ### stderr_harvester
 
-def stderr_harvester():
+def stderr_harvester(skip_stderrs):
     while True:
         try:
             time.sleep(1)
@@ -77,9 +77,7 @@ def main():
         exit(usage)
     imp.load_source('critbot_config', sys.argv[1])
 
-    skip_stderrs = crit_defaults.get('skip_stderrs', [])
-
-    stderr_thread = Thread(target=stderr_harvester)
+    stderr_thread = Thread(target=stderr_harvester, args=(crit_defaults.get('skip_stderrs', []), ))
     stderr_thread.daemon = True
     stderr_thread.start()
 
