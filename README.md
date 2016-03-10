@@ -70,6 +70,7 @@ then you can monitor stderr, EXITED and FATAL states with:
     stderr_events_enabled=true
 
     Optional "crit_defaults.skip_stderrs" list allows to avoid some "safe" crits.
+    Optional "crit_defaults.max_stderr_crit_length" allows to save e.g. Slack from being broken.
 
 If you want to convert stderr of your small scripts to crits:
 
@@ -87,6 +88,6 @@ To stop spam from multiple processes:
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.16  
+critbot version 0.1.17  
 Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

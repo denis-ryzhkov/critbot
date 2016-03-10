@@ -18,6 +18,7 @@ events=PROCESS_LOG_STDERR,PROCESS_STATE_EXITED,PROCESS_STATE_FATAL
 stderr_events_enabled=true
 
 Optional "crit_defaults.skip_stderrs" list allows to avoid some "safe" crits.
+Optional "crit_defaults.max_stderr_crit_length" allows to save e.g. Slack from being broken.
 '''
 
 ### import
@@ -42,7 +43,7 @@ stderr_chunks = defaultdict(list)
 
 ### stderr_harvester
 
-def stderr_harvester(skip_stderrs):
+def stderr_harvester(skip_stderrs, max_stderr_crit_length):
     while True:
         try:
             time.sleep(1)
@@ -63,7 +64,10 @@ def stderr_harvester(skip_stderrs):
                     del stderr_chunks[header]
 
             if texts:
-                crit('\n'.join(texts))
+                text = '\n'.join(texts)
+                if max_stderr_crit_length and len(text) > max_stderr_crit_length:
+                    text = text[:max_stderr_crit_length] + '...'
+                crit(text)
 
         except Exception:
             print_exc() # To /var/log/supervisor/critvisor-stderr*
@@ -77,7 +81,7 @@ def main():
         exit(usage)
     imp.load_source('critbot_config', sys.argv[1])
 
-    stderr_thread = Thread(target=stderr_harvester, args=(crit_defaults.get('skip_stderrs', []), ))
+    stderr_thread = Thread(target=stderr_harvester, args=(crit_defaults.get('skip_stderrs', []), crit_defaults.get('max_stderr_crit_length', 0)))
     stderr_thread.daemon = True
     stderr_thread.start()
 
