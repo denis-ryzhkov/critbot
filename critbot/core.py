@@ -22,7 +22,10 @@ crit_defaults = adict(
 
     stop_spam_file=adict(  # Stop spam from multiple processes at the same host.
         enabled=False,
-        path='/run/lock/critbot',  # RAM, no disk IO.
+        path=(
+            '/run/lock/critbot' if sys.platform.startswith('linux')  # RAM, no disk IO.
+            else '/tmp/critbot'  # Mac OS X, etc.
+        ),
     ),
 
     mc=adict( # Memcached to stop spam from multiple hosts.

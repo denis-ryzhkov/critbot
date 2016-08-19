@@ -93,6 +93,6 @@ To stop spam from multiple hosts:
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.18  
+critbot version 0.1.19  
 Copyright (C) 2015-2016 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT

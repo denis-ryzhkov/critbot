@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.18',
+    version='0.1.19',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
