@@ -8,6 +8,7 @@ https://github.com/denis-ryzhkov/critbot
 ### import
 
 from adict import adict
+from os import stat
 import time
 from traceback import format_exc
 import sys
@@ -19,7 +20,12 @@ crit_defaults = adict(
     plugins=[], # [critbot.plugins.syslog.plugin(), ...]
     crit_in_crit=sys.stderr.write, # logging.getLogger('critbot').critical - if you enabled "syslog" plugin, else your_logger.critical
 
-    mc=adict( # Memcached to stop spam from multiple processes.
+    stop_spam_file=adict(  # Stop spam from multiple processes at the same host.
+        enabled=False,
+        path='/run/lock/critbot',  # RAM, no disk IO.
+    ),
+
+    mc=adict( # Memcached to stop spam from multiple hosts.
         enabled=False,
         servers=['127.0.0.1'], # http://sendapatch.se/projects/pylibmc/reference.html#pylibmc.Client
         client_config=adict(binary=True, behaviors=dict(tcp_nodelay=True, distribution='consistent')),
@@ -72,12 +78,17 @@ def crit(only='', also='', subject='', plugins=None, spam=False):
                 except Exception:
                     crit_defaults.crit_in_crit(format_exc())
 
-        ### plugins, seconds_per_notification
+        ### plugins
 
         now = time.time()
         for plugin in plugins or crit_defaults.plugins:
 
+            ### stop spam
+
             if not spam:
+
+                ### multiple hosts
+
                 if mc_pool and plugin.seconds_per_notification: # Don't bother Memcached for "syslog" and other "seconds_per_notification=0" plugins.
                     try:
                         with mc_pool.reserve(block=True) as mc:
@@ -85,6 +96,19 @@ def crit(only='', also='', subject='', plugins=None, spam=False):
                                 continue # E.g. key "critbot.plugins.slack.antispam" still exists.
                     except Exception:
                         crit_defaults.crit_in_crit(format_exc())
+
+                ### one host, multiple processes
+
+                if crit_defaults.stop_spam_file.enabled and plugin.seconds_per_notification:
+                    try:
+                        mtime = stat(crit_defaults.stop_spam_file.path).st_mtime
+                    except OSError:
+                        mtime = None
+                    if mtime and now - mtime < plugin.seconds_per_notification:
+                        continue
+                    open(crit_defaults.stop_spam_file.path, 'w').close()
+
+                ### one process
 
                 if now - plugin.last_notification_timestamp < plugin.seconds_per_notification:
                     continue

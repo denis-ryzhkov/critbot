@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='critbot',
-    version='0.1.17',
+    version='0.1.18',
     description='Sending critical errors to syslog, slack, email, {your_plugin}.',
     long_description='''
 Install::
@@ -83,7 +83,12 @@ If you want to convert stderr of your small scripts to crits::
 
     stdcrit /path/to/config.py /path/to/script.py arg...
 
-To stop spam from multiple processes::
+To stop spam from multiple processes on the same host::
+
+    crit_defaults.stop_spam_file.enabled = True
+    # "crit_defaults.stop_spam_file.path" defaults to "/run/lock/critbot" - RAM, no disk IO.
+
+To stop spam from multiple hosts::
 
     apt-get install libmemcached-dev zlib1g-dev
     pip install pylibmc

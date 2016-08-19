@@ -76,7 +76,12 @@ If you want to convert stderr of your small scripts to crits:
 
     stdcrit /path/to/config.py /path/to/script.py arg...
 
-To stop spam from multiple processes:
+To stop spam from multiple processes on the same host:
+
+    crit_defaults.stop_spam_file.enabled = True
+    # "crit_defaults.stop_spam_file.path" defaults to "/run/lock/critbot" - RAM, no disk IO.
+
+To stop spam from multiple hosts:
 
     apt-get install libmemcached-dev zlib1g-dev
     pip install pylibmc
@@ -88,6 +93,6 @@ To stop spam from multiple processes:
 Please fork https://github.com/denis-ryzhkov/critbot  
 and create pull requests with new plugins inside.
 
-critbot version 0.1.17  
-Copyright (C) 2015 by Denis Ryzhkov <denisr@denisr.com>  
+critbot version 0.1.18  
+Copyright (C) 2015-2016 by Denis Ryzhkov <denisr@denisr.com>  
 MIT License, see http://opensource.org/licenses/MIT
